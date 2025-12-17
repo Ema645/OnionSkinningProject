@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnionMotion - Stop-Motion Animation</title>
+    <link rel="stylesheet" href="/videopage.css">
+</head>
+<body>
+    <div class="container">
+        <div class="page-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <img src="/Pictures/img.png" alt="OnionMotion" class="logo-icon">
+                        <span class="logo-text">OnionMotion</span>
+                    </div>
+                    <nav class="nav-primary">
+                        <a href="/homepage" class="nav-link">Homepage</a>
+                        <a href="/videopage" class="nav-link">Videopage</a>
+                    </nav>
+                    <nav class="nav-secondary">
+                        <a href="#" class="nav-link">Tutorial</a>
+                        <a href="#" class="nav-link">Support</a>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="animation-card">
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <h1 class="card-title">Stop-Motion Animation</h1>
+                        <a href="/" class="btn btn-back">
+                            <span class="icon icon-back"></span>
+                            Back to Editor
+                        </a>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Player Section -->
+                        <div class="player-section">
+                            <div class="video-preview">
+                                <div class="video-viewport"></div>
+                                <div class="frame-indicator">Frame 1 / 8</div>
+                            </div>
+
+                            <!-- Controls -->
+                            <div class="player-controls">
+                                <div class="control-buttons">
+                                    <button class="btn btn-play">
+                                        <span class="icon icon-play"></span>
+                                        Play
+                                    </button>
+                                    <button class="btn btn-reset">
+                                        <span class="icon icon-reset"></span>
+                                        Reset
+                                    </button>
+                                    <button class="btn btn-download">
+                                        <span class="icon icon-download"></span>
+                                        Download
+                                    </button>
+                                    <label class="loop-toggle">
+                                        <input type="checkbox" class="loop-checkbox">
+                                        <span class="loop-label">Loop</span>
+                                    </label>
+                                </div>
+
+                                <!-- Progress Bar -->
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 12.5%;">
+                                            <div class="progress-handle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Speed Control -->
+                                <div class="speed-control">
+                                    <div class="speed-header">
+                                        <div class="speed-info">
+                                            <span class="speed-label">Playback Speed:</span>
+                                            <span class="speed-value">12 FPS</span>
+                                        </div>
+                                        <span class="duration-info">Duration: ~0.7s</span>
+                                    </div>
+                                    <div class="speed-slider">
+                                        <div class="slider-track">
+                                            <div class="slider-fill" style="width: 50%;">
+                                                <div class="slider-handle"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="speed-labels">
+                                        <span>Slower</span>
+                                        <span>Faster</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Section -->
+                        <aside class="timeline-section">
+                            <h2 class="timeline-title">Timeline</h2>
+                            <div class="timeline-frames">
+                                <!-- Frames will be added here dynamically -->
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="/videopage.js"></script>
+</body>
+</html>

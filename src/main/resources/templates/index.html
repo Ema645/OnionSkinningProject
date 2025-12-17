@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnionMotion - Camera Capture</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="page-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <img src="/Pictures/img.png" alt="OnionMotion" class="logo-icon">
+                        <span class="logo-text">OnionMotion</span>
+                    </div>
+                    <nav class="nav-primary">
+                        <a href="/homepage" class="nav-link">Homepage</a>
+                        <a href="/videopage" class="nav-link">Videopage</a>
+                    </nav>
+                    <nav class="nav-secondary">
+                        <a href="#" class="nav-link">Tutorial</a>
+                        <a href="#" class="nav-link">Support</a>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="capture-card">
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <h1 class="card-title">Camera Capture</h1>
+                        <button class="btn btn-close">
+                            <span class="icon icon-close"></span>
+                            Close Camera
+                        </button>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Camera Section -->
+                        <div class="camera-section">
+                            <div class="camera-preview">
+                                <div class="camera-viewport"></div>
+                                <div class="frame-counter">Frames: 0</div>
+                            </div>
+                            <div class="capture-controls">
+                                <button class="btn btn-capture" disabled>
+                                    <span class="icon icon-camera"></span>
+                                    Capture Frame
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Section -->
+                        <aside class="timeline-section">
+                            <h2 class="timeline-title">Timeline</h2>
+                            <div class="timeline-empty">
+                                <div class="empty-icon">
+                                    <span class="icon icon-image"></span>
+                                </div>
+                                <p class="empty-text">No frames yet</p>
+                                <p class="empty-hint">Start capturing!</p>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
+

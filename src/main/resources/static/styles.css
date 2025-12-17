@@ -1,0 +1,367 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #F9FAFB;
+    min-height: 100vh;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: white;
+}
+
+.page-wrapper {
+    background: #F9FAFB;
+    min-height: 100vh;
+}
+
+/* Header */
+.header {
+    background: white;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10);
+    border-bottom: 1px solid #E5E7EB;
+    padding: 16px 67px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1248px;
+    margin: 0 auto;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 32px;
+    font-weight: 400;
+    color: #101828;
+    line-height: 1;
+}
+
+.nav-primary,
+.nav-secondary {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav-link {
+    font-size: 14px;
+    color: #4A5565;
+    text-decoration: none;
+    line-height: 20px;
+}
+
+.nav-link:hover {
+    color: #101828;
+}
+
+/* Main Content */
+.main-content {
+    padding: 52px 115px;
+}
+
+/* Capture Card */
+.capture-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.10);
+    padding: 32px;
+    max-width: 1152px;
+    margin: 0 auto;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 400;
+    color: #101828;
+}
+
+.card-body {
+    display: flex;
+    gap: 24px;
+}
+
+/* Camera Section */
+.camera-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 717px;
+}
+
+.camera-preview {
+    position: relative;
+    background: #101828;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.10);
+    outline: 4px solid #E5E7EB;
+    outline-offset: -4px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    min-height: 400px;
+}
+
+.camera-viewport {
+    width: 100%;
+    height: 100%;
+}
+
+.frame-counter {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #155DFC;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.10);
+}
+
+/* Capture Controls */
+.capture-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-close {
+    background: #4A5565;
+    color: white;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.10);
+}
+
+.btn-capture {
+    background: #155DFC;
+    color: white;
+    height: 64px;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.10);
+}
+
+.btn-capture:disabled {
+    background: #99A1AF;
+    cursor: not-allowed;
+}
+
+/* Icons */
+.icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    position: relative;
+}
+
+.icon-close {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-close::before,
+.icon-close::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 1.33px solid white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.icon-camera::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 16px;
+    border: 2px solid white;
+    border-radius: 2px;
+    top: 4px;
+    left: 2px;
+}
+
+.icon-camera::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border: 2px solid white;
+    border-radius: 50%;
+    top: 10px;
+    left: 9px;
+}
+
+/* Timeline Section */
+.timeline-section {
+    width: 347px;
+    background: #F9FAFB;
+    border-radius: 10px;
+    border: 1px solid #E5E7EB;
+    padding: 17px;
+    flex-shrink: 0;
+}
+
+.timeline-title {
+    font-size: 16px;
+    font-weight: 400;
+    color: #1E2939;
+    margin-bottom: 16px;
+}
+
+.timeline-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 0;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: #E5E7EB;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.empty-icon .icon-image {
+    width: 40px;
+    height: 40px;
+    opacity: 0.3;
+    position: relative;
+}
+
+.empty-icon .icon-image::before {
+    content: '';
+    position: absolute;
+    width: 33px;
+    height: 27px;
+    border: 3px solid #6A7282;
+    border-radius: 2px;
+    top: 7px;
+    left: 3px;
+}
+
+.empty-icon .icon-image::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 3px solid #6A7282;
+    border-radius: 50%;
+    top: 17px;
+    left: 15px;
+}
+
+.empty-text {
+    font-size: 14px;
+    color: #6A7282;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.empty-hint {
+    font-size: 12px;
+    color: #6A7282;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 32px;
+    }
+
+    .card-body {
+        flex-direction: column;
+    }
+
+    .timeline-section {
+        width: 100%;
+    }
+
+    .camera-section {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 16px 24px;
+    }
+
+    .header-content {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .nav-primary,
+    .nav-secondary {
+        gap: 16px;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .capture-card {
+        padding: 16px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+}
+

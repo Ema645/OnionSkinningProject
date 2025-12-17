@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnionMotion - Manage Your Frames</title>
+    <link rel="stylesheet" href="/frames.css">
+</head>
+<body>
+    <div class="container">
+        <div class="page-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <img src="/Pictures/img.png" alt="OnionMotion" class="logo-icon">
+                        <span class="logo-text">OnionMotion</span>
+                    </div>
+                    <nav class="nav-primary">
+                        <a href="/homepage" class="nav-link">Homepage</a>
+                        <a href="/videopage" class="nav-link">Videopage</a>
+                    </nav>
+                    <nav class="nav-secondary">
+                        <a href="#" class="nav-link">Tutorial</a>
+                        <a href="#" class="nav-link">Support</a>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="frames-card">
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <h1 class="card-title">Manage Your Frames</h1>
+                        <div class="header-actions">
+                            <button class="btn btn-add">+ Add More Images</button>
+                            <button class="btn btn-back">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Frames Grid: leerer Zustand standardmäßig -->
+                    <div class="frames-grid empty">
+                        <div class="timeline-empty">
+                            <div class="empty-icon">
+                                <span class="icon icon-image"></span>
+                            </div>
+                            <p class="empty-text">No frames yet</p>
+                            <p class="empty-hint">Upload images to get started</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card-actions">
+                        <button class="btn btn-create" disabled>Create Animation (0 frames)</button>
+                        <button class="btn btn-clear" disabled>Clear All</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

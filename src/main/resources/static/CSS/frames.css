@@ -9,6 +9,7 @@ body { font-family: Arial, sans-serif; background: #F9FAFB; min-height: 100vh; }
 /* Header */
 .header { background: white; box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10); border-bottom: 1px solid #E5E7EB; padding: 16px 67px; }
 .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1248px; margin: 0 auto; }
+.nav-left { display: flex; align-items: center; gap: 32px; }
 .logo-section { display: flex; align-items: center; gap: 12px; }
 .logo-icon { width: 40px; height: 40px; object-fit: contain; }
 .logo-text { font-size: 32px; font-weight: 400; color: #101828; line-height: 1; }

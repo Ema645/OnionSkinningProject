@@ -12,14 +12,16 @@
             <!-- Header -->
             <header class="header">
                 <div class="header-content">
-                    <div class="logo-section">
-                        <img src="/Pictures/img.png" alt="OnionMotion" class="logo-icon">
-                        <span class="logo-text">OnionMotion</span>
+                    <div class="nav-left">
+                        <div class="logo-section">
+                            <img src="/Pictures/img.png" alt="OnionMotion" class="logo-icon">
+                            <span class="logo-text">OnionMotion</span>
+                        </div>
+                        <nav class="nav-primary">
+                            <a href="/homepage" class="nav-link">Homepage</a>
+                            <a href="/videopage" class="nav-link">Videopage</a>
+                        </nav>
                     </div>
-                    <nav class="nav-primary">
-                        <a href="/homepage" class="nav-link">Homepage</a>
-                        <a href="/videopage" class="nav-link">Videopage</a>
-                    </nav>
                     <nav class="nav-secondary">
                         <a href="#" class="nav-link">Tutorial</a>
                         <a href="#" class="nav-link">Support</a>
@@ -85,10 +87,8 @@
                                         </div>
                                         <span class="duration-info" id="duration-value">Duration: ~0.7s</span>
                                     </div>
-                                    <div class="speed-slider">
-                                        <div class="slider-track">
-                                            <input type="range" id="fps-slider" class="fps-slider" min="1" max="24" value="12">
-                                        </div>
+                                    <div class="fps-container">
+                                        <input type="range" id="fps-slider" class="fps-slider" min="1" max="24" value="12">
                                     </div>
                                     <div class="speed-labels">
                                         <span>Slower</span>

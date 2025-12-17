@@ -777,13 +777,8 @@ const VideoPlayerModule = {
     },
 
     async downloadVideo() {
-        const format = document.getElementById('download-format')?.value || 'gif';
-
-        if (format === 'gif') {
-            await this.downloadAsGif();
-        } else {
-            await this.downloadAsWebM();
-        }
+        // Standardmäßig MP4 downloaden
+        await this.downloadAsMP4();
     },
 
     async downloadAsGif() {
@@ -901,8 +896,65 @@ const VideoPlayerModule = {
         }
     },
 
+    async downloadAsMP4() {
+        const btn = document.getElementById('btn-download');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Erstelle MP4... 0%';
+        btn.disabled = true;
+
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d');
+
+            const stream = canvas.captureStream(this.fps);
+            const mimeType = 'video/mp4';
+            const recorder = new MediaRecorder(stream, { mimeType });
+
+            const chunks = [];
+            recorder.ondataavailable = (e) => chunks.push(e.data);
+
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/mp4' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `onionmotion-${Date.now()}.mp4`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            };
+
+            recorder.start();
+
+            // Zeichne alle Frames
+            for (let i = 0; i < this.frames.length; i++) {
+                const img = new Image();
+                img.src = this.frames[i].dataUrl;
+                await new Promise(resolve => img.onload = resolve);
+
+                ctx.drawImage(img, 0, 0, 640, 480);
+                await new Promise(resolve => setTimeout(resolve, 1000 / this.fps));
+
+                const progress = Math.round((i + 1) / this.frames.length * 100);
+                btn.innerHTML = `Erstelle MP4... ${progress}%`;
+            }
+
+            recorder.stop();
+
+        } catch (err) {
+            console.error('MP4 creation failed:', err);
+            await this.downloadAsGif();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    },
+
     async downloadFramesAsZip() {
-        alert('GIF-Bibliothek nicht verfügbar. Frames werden einzeln heruntergeladen.');
+        alert('Video-Erstellung nicht möglich. Frames werden einzeln heruntergeladen.');
 
         for (let i = 0; i < this.frames.length; i++) {
             const a = document.createElement('a');

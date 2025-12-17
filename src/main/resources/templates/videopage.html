@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OnionMotion - Stop-Motion Animation</title>
-    <link rel="stylesheet" href="/videopage.css">
+    <link rel="stylesheet" href="/CSS/videopage.css">
 </head>
 <body>
     <div class="container">
@@ -33,10 +33,10 @@
                     <!-- Card Header -->
                     <div class="card-header">
                         <h1 class="card-title">Stop-Motion Animation</h1>
-                        <a href="/" class="btn btn-back">
+                        <button class="btn btn-back" id="btn-back">
                             <span class="icon icon-back"></span>
                             Back to Editor
-                        </a>
+                        </button>
                     </div>
 
                     <!-- Card Body -->
@@ -44,27 +44,27 @@
                         <!-- Player Section -->
                         <div class="player-section">
                             <div class="video-preview">
-                                <div class="video-viewport"></div>
-                                <div class="frame-indicator">Frame 1 / 8</div>
+                                <img id="video-display" class="video-viewport" alt="Animation Frame">
+                                <div class="frame-indicator" id="frame-indicator">Frame 1 / 8</div>
                             </div>
 
                             <!-- Controls -->
                             <div class="player-controls">
                                 <div class="control-buttons">
-                                    <button class="btn btn-play">
+                                    <button class="btn btn-play" id="btn-play">
                                         <span class="icon icon-play"></span>
                                         Play
                                     </button>
-                                    <button class="btn btn-reset">
+                                    <button class="btn btn-reset" id="btn-reset">
                                         <span class="icon icon-reset"></span>
                                         Reset
                                     </button>
-                                    <button class="btn btn-download">
+                                    <button class="btn btn-download" id="btn-download">
                                         <span class="icon icon-download"></span>
                                         Download
                                     </button>
                                     <label class="loop-toggle">
-                                        <input type="checkbox" class="loop-checkbox">
+                                        <input type="checkbox" class="loop-checkbox" id="loop-checkbox" checked>
                                         <span class="loop-label">Loop</span>
                                     </label>
                                 </div>
@@ -72,9 +72,7 @@
                                 <!-- Progress Bar -->
                                 <div class="progress-container">
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 12.5%;">
-                                            <div class="progress-handle"></div>
-                                        </div>
+                                        <input type="range" id="progress-slider" class="progress-slider" min="0" max="100" value="0">
                                     </div>
                                 </div>
 
@@ -83,15 +81,13 @@
                                     <div class="speed-header">
                                         <div class="speed-info">
                                             <span class="speed-label">Playback Speed:</span>
-                                            <span class="speed-value">12 FPS</span>
+                                            <span class="speed-value" id="fps-value">12 FPS</span>
                                         </div>
-                                        <span class="duration-info">Duration: ~0.7s</span>
+                                        <span class="duration-info" id="duration-value">Duration: ~0.7s</span>
                                     </div>
                                     <div class="speed-slider">
                                         <div class="slider-track">
-                                            <div class="slider-fill" style="width: 50%;">
-                                                <div class="slider-handle"></div>
-                                            </div>
+                                            <input type="range" id="fps-slider" class="fps-slider" min="1" max="24" value="12">
                                         </div>
                                     </div>
                                     <div class="speed-labels">
@@ -105,7 +101,7 @@
                         <!-- Timeline Section -->
                         <aside class="timeline-section">
                             <h2 class="timeline-title">Timeline</h2>
-                            <div class="timeline-frames">
+                            <div class="timeline-frames" id="timeline-frames">
                                 <!-- Frames will be added here dynamically -->
                             </div>
                         </aside>
@@ -114,6 +110,6 @@
             </main>
         </div>
     </div>
-    <script src="/videopage.js"></script>
+    <script src="/JS/app.js"></script>
 </body>
 </html>

@@ -316,6 +316,97 @@ body {
     text-align: center;
 }
 
+/* p5.js Canvas Container */
+#p5-canvas-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#p5-canvas-container canvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Onion Skin Controls */
+.onion-controls {
+    margin-top: 16px;
+    padding: 16px;
+    background: #F3F4F6;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.opacity-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.opacity-control label {
+    font-size: 14px;
+    color: #4A5565;
+}
+
+.opacity-control input[type="range"] {
+    width: 100%;
+}
+
+/* Preview Button */
+.btn-preview {
+    background: #00A63E;
+    color: white;
+    margin-top: 8px;
+}
+
+/* Timeline Frame */
+.timeline-frame {
+    padding: 12px;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.timeline-frame:hover {
+    border-color: #155DFC;
+    background: #F9FAFB;
+}
+
+.timeline-frame.active {
+    border-color: #155DFC;
+    background: #EEF2FF;
+}
+
+.timeline-frame .frame-number {
+    font-size: 12px;
+    font-weight: bold;
+    color: #155DFC;
+    min-width: 30px;
+}
+
+.timeline-frame .frame-thumb {
+    width: 60px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.timeline-frame .frame-time {
+    font-size: 12px;
+    color: #6B7280;
+    margin-left: auto;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
     .main-content {
@@ -364,4 +455,3 @@ body {
         align-items: flex-start;
     }
 }
-

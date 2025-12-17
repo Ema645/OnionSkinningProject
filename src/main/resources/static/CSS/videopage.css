@@ -133,6 +133,13 @@ body {
 .video-viewport {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+}
+
+#video-display {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .frame-indicator {
@@ -262,6 +269,36 @@ body {
     position: absolute;
     right: -12px;
     cursor: pointer;
+}
+
+/* Progress Slider */
+.progress-slider {
+    width: 100%;
+    height: 8px;
+    background: #E5E7EB;
+    border-radius: 10px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #155DFC;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.progress-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #155DFC;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
 }
 
 /* Speed Control */
@@ -442,86 +479,64 @@ body {
     gap: 8px;
     overflow-y: auto;
     flex: 1;
+    max-height: 500px;
 }
 
-/* Frame Item */
-.frame-item {
+.timeline-frame {
+    position: relative;
+    padding: 12px;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: white;
-    padding: 14px;
-    border-radius: 10px;
-    border: 2px solid #E5E7EB;
-    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.10);
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.frame-item:hover .btn-delete {
-    opacity: 1;
+.timeline-frame:hover {
+    border-color: #155DFC;
+    background: #F9FAFB;
 }
 
-.frame-number {
-    width: 30px;
+.timeline-frame.active {
+    border-color: #155DFC;
+    background: #EEF2FF;
+}
+
+.timeline-frame .frame-number {
     font-size: 12px;
+    font-weight: bold;
     color: #155DFC;
+    min-width: 30px;
 }
 
-.frame-thumbnail {
-    width: 64px;
-    height: 64px;
-    background: #E5E7EB;
+.timeline-frame .frame-thumb {
+    width: 60px;
+    height: 45px;
+    object-fit: cover;
     border-radius: 4px;
 }
 
-.frame-time {
-    flex: 1;
+.timeline-frame .frame-time {
     font-size: 12px;
-    color: #4A5565;
+    color: #6B7280;
+    margin-left: auto;
 }
 
-.btn-delete {
-    width: 28px;
-    height: 28px;
-    background: #FEF2F2;
+.btn-delete-frame {
+    background: #E7000B;
+    color: white;
     border: none;
     border-radius: 4px;
+    padding: 4px 8px;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 12px;
 }
 
-.btn-delete:hover {
-    background: #FEE2E2;
-}
-
-.icon-trash {
-    width: 16px;
-    height: 16px;
-}
-
-.icon-trash::before {
-    content: '';
-    position: absolute;
-    width: 9px;
-    height: 11px;
-    border: 1px solid #E7000B;
-    border-top: none;
-    border-radius: 0 0 2px 2px;
-    top: 6px;
-    left: 3px;
-}
-
-.icon-trash::after {
-    content: '';
-    position: absolute;
-    width: 11px;
-    height: 2px;
-    background: #E7000B;
-    top: 3px;
-    left: 2px;
+.btn-delete-frame:hover {
+    background: #C50009;
 }
 
 /* Responsive */
@@ -586,4 +601,3 @@ body {
         font-size: 14px;
     }
 }
-

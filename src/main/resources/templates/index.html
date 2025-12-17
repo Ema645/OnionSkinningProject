@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OnionMotion - Camera Capture</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/CSS/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -33,7 +34,7 @@
                     <!-- Card Header -->
                     <div class="card-header">
                         <h1 class="card-title">Camera Capture</h1>
-                        <button class="btn btn-close">
+                        <button class="btn btn-close" id="btn-close-camera">
                             <span class="icon icon-close"></span>
                             Close Camera
                         </button>
@@ -44,26 +45,48 @@
                         <!-- Camera Section -->
                         <div class="camera-section">
                             <div class="camera-preview">
-                                <div class="camera-viewport"></div>
-                                <div class="frame-counter">Frames: 0</div>
+                                <!-- p5.js Canvas Container -->
+                                <div id="p5-canvas-container"></div>
+
+                                <!-- Error Display -->
+                                <div id="camera-error" style="display:none; color:red; padding:10px;"></div>
+                                <div id="camera-retry" style="display:none;">
+                                    <button id="btn-retry" class="btn">Retry Camera</button>
+                                </div>
+
+                                <div class="frame-counter" id="frame-counter">Frames: 0</div>
                             </div>
                             <div class="capture-controls">
-                                <button class="btn btn-capture" disabled>
+                                <button class="btn btn-capture" id="btn-capture" disabled>
                                     <span class="icon icon-camera"></span>
                                     Capture Frame
                                 </button>
+                                <button class="btn btn-preview" id="btn-preview" style="display:none;">
+                                    Preview Animation
+                                </button>
+                            </div>
+
+                            <!-- Onion Skin Controls -->
+                            <div id="onion-controls" class="onion-controls" style="display:none;">
+                                <button id="btn-onion-toggle" class="btn">Hide Onion Skin</button>
+                                <div class="opacity-control">
+                                    <label>Opacity: <span id="opacity-value">30%</span></label>
+                                    <input type="range" id="onion-opacity" min="0" max="1" step="0.01" value="0.3">
+                                </div>
                             </div>
                         </div>
 
                         <!-- Timeline Section -->
                         <aside class="timeline-section">
                             <h2 class="timeline-title">Timeline</h2>
-                            <div class="timeline-empty">
-                                <div class="empty-icon">
-                                    <span class="icon icon-image"></span>
+                            <div id="timeline-content">
+                                <div class="timeline-empty">
+                                    <div class="empty-icon">
+                                        <span class="icon icon-image"></span>
+                                    </div>
+                                    <p class="empty-text">No frames yet</p>
+                                    <p class="empty-hint">Start capturing!</p>
                                 </div>
-                                <p class="empty-text">No frames yet</p>
-                                <p class="empty-hint">Start capturing!</p>
                             </div>
                         </aside>
                     </div>
@@ -71,6 +94,9 @@
             </main>
         </div>
     </div>
+
+    <script src="/JS/app.js"></script>
+
 </body>
 </html>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,6 @@
 <body>
     <div class="container">
         <div class="page-wrapper">
-            <!-- Header -->
             <header class="header">
                 <div class="header-content">
                     <div class="nav-left">
@@ -19,6 +18,7 @@
                         </div>
                         <nav class="nav-primary">
                             <a href="/homepage" class="nav-link">Homepage</a>
+                            <a href="/frames" class="nav-link">Frames</a>
                             <a href="/videopage" class="nav-link">Videopage</a>
                         </nav>
                     </div>
@@ -29,10 +29,8 @@
                 </div>
             </header>
 
-            <!-- Main Content -->
             <main class="main-content">
                 <div class="animation-card">
-                    <!-- Card Header -->
                     <div class="card-header">
                         <h1 class="card-title">Stop-Motion Animation</h1>
                         <button class="btn btn-back" id="btn-back">
@@ -41,16 +39,13 @@
                         </button>
                     </div>
 
-                    <!-- Card Body -->
                     <div class="card-body">
-                        <!-- Player Section -->
                         <div class="player-section">
                             <div class="video-preview">
                                 <img id="video-display" class="video-viewport" alt="Animation Frame">
                                 <div class="frame-indicator" id="frame-indicator">Frame 1 / 8</div>
                             </div>
 
-                            <!-- Controls -->
                             <div class="player-controls">
                                 <div class="control-buttons">
                                     <button class="btn btn-play" id="btn-play">
@@ -71,14 +66,12 @@
                                     </label>
                                 </div>
 
-                                <!-- Progress Bar -->
                                 <div class="progress-container">
                                     <div class="progress-bar">
                                         <input type="range" id="progress-slider" class="progress-slider" min="0" max="100" value="0">
                                     </div>
                                 </div>
 
-                                <!-- Speed Control -->
                                 <div class="speed-control">
                                     <div class="speed-header">
                                         <div class="speed-info">
@@ -98,11 +91,9 @@
                             </div>
                         </div>
 
-                        <!-- Timeline Section -->
                         <aside class="timeline-section">
                             <h2 class="timeline-title">Timeline</h2>
                             <div class="timeline-frames" id="timeline-frames">
-                                <!-- Frames will be added here dynamically -->
                             </div>
                         </aside>
                     </div>

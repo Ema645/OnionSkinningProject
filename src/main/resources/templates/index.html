@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,6 @@
 <body>
     <div class="container">
         <div class="page-wrapper">
-            <!-- Header -->
             <header class="header">
                 <div class="header-content">
                     <div class="nav-left">
@@ -20,6 +19,7 @@
                         </div>
                         <nav class="nav-primary">
                             <a href="/homepage" class="nav-link">Homepage</a>
+                            <a href="/frames" class="nav-link">Frames</a>
                             <a href="/videopage" class="nav-link">Videopage</a>
                         </nav>
                     </div>
@@ -30,10 +30,8 @@
                 </div>
             </header>
 
-            <!-- Main Content -->
             <main class="main-content">
                 <div class="capture-card">
-                    <!-- Card Header -->
                     <div class="card-header">
                         <h1 class="card-title">Camera Capture</h1>
                         <button class="btn btn-close" id="btn-close-camera">
@@ -42,15 +40,11 @@
                         </button>
                     </div>
 
-                    <!-- Card Body -->
                     <div class="card-body">
-                        <!-- Camera Section -->
                         <div class="camera-section">
                             <div class="camera-preview">
-                                <!-- p5.js Canvas Container -->
                                 <div id="p5-canvas-container"></div>
 
-                                <!-- Error Display -->
                                 <div id="camera-error" style="display:none; color:red; padding:10px;"></div>
                                 <div id="camera-retry" style="display:none;">
                                     <button id="btn-retry" class="btn">Retry Camera</button>
@@ -68,7 +62,6 @@
                                 </button>
                             </div>
 
-                            <!-- Onion Skin Controls -->
                             <div id="onion-controls" class="onion-controls" style="display:none;">
                                 <button id="btn-onion-toggle" class="btn">Hide Onion Skin</button>
                                 <div class="opacity-control">
@@ -78,7 +71,6 @@
                             </div>
                         </div>
 
-                        <!-- Timeline Section -->
                         <aside class="timeline-section">
                             <h2 class="timeline-title">Timeline</h2>
                             <div id="timeline-content">

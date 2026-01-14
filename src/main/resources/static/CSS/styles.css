@@ -208,41 +208,40 @@ body {
 .icon-close {
     width: 16px;
     height: 16px;
+    position: relative;
 }
 
 .icon-close::before,
 .icon-close::after {
     content: '';
     position: absolute;
-    width: 8px;
-    height: 8px;
-    border: 1.33px solid white;
-    border-radius: 50%;
+    width: 16px;
+    height: 2px;
+    background: white;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
 }
 
-.icon-camera::before {
-    content: '';
-    position: absolute;
+.icon-close::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.icon-close::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.icon-camera {
     width: 20px;
-    height: 16px;
-    border: 2px solid white;
-    border-radius: 2px;
-    top: 4px;
-    left: 2px;
+    height: 20px;
+    background-image: url('/Pictures/camera-icon.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
+.icon-camera::before,
 .icon-camera::after {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    border: 2px solid white;
-    border-radius: 50%;
-    top: 10px;
-    left: 9px;
+    display: none;
 }
 
 /* Timeline Section */

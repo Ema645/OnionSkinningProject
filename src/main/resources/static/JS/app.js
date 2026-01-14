@@ -1,14 +1,3 @@
-/**
- * OnionMotion - Stop Motion Animation App
- * Mit p5.js für Kamera-Rendering und Onion Skinning
- *
- * Technische Umsetzung laut Dokumentation:
- * - Kamerazugriff über p5.js createCapture(VIDEO)
- * - Rendering-Loop mit draw() für Onion Skinning
- * - tint() für Transparenz-Steuerung
- */
-
-// ==================== FRAME STORAGE ====================
 const FrameStore = {
     KEY: 'onionmotion_frames',
 
@@ -18,8 +7,14 @@ const FrameStore = {
     },
 
     saveFrames(frames) {
-        localStorage.setItem(this.KEY, JSON.stringify(frames));
-        window.dispatchEvent(new CustomEvent('framesUpdated', { detail: frames }));
+        try {
+            localStorage.setItem(this.KEY, JSON.stringify(frames));
+            window.dispatchEvent(new CustomEvent('framesUpdated', { detail: frames }));
+        } catch (err) {
+            console.error('Saving frames failed', err);
+            alert('Cannot save: Storage full or blocked. Please delete some frames.');
+            throw err;
+        }
     },
 
     addFrame(dataUrl) {
@@ -51,213 +46,165 @@ const FrameStore = {
     }
 };
 
-// ==================== P5.JS CAMERA MODULE ====================
-// Globale Variablen für p5.js Sketch
-let capture;           // Webcam capture (p5.js MediaElement)
-let lastFrameImg;      // Letztes aufgenommenes Frame als p5.Image
-let onionOpacity = 75; // Transparenz 0-255 (Standard: ~30%)
+async function compressImage(dataUrl, maxSize = 800, quality = 0.55) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            let { width, height } = img;
+            const scale = Math.min(1, maxSize / Math.max(width, height));
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            try {
+                const webp = canvas.toDataURL('image/webp', quality);
+                if (webp && webp.length < dataUrl.length) {
+                    resolve(webp);
+                    return;
+                }
+            } catch (e) {}
+
+            resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
+    });
+}
+
+let capture;
+let lastFrameImg;
+let onionOpacity = 75;
 let showOnionSkin = true;
 let cameraReady = false;
 let cameraError = null;
-let flashAlpha = 0;    // Für Blitz-Effekt beim Aufnehmen
+let flashAlpha = 0;
 
-/**
- * p5.js Sketch für die Kamera-Seite
- * Implementiert das Onion Skinning wie in der Dokumentation beschrieben:
- *
- * "Die Magie des Onion Skinnings passiert im draw()-Loop von p5.js:
- *  1. Zuerst wird das aktuelle Bild auf den Canvas gezeichnet (Webcam)
- *  2. Falls bereits ein Frame aufgenommen wurde, wird dieses über das aktuelle Bild gelegt
- *  3. Die Transparenz wird mit p5.js-Funktionen dynamisch gesteuert"
- */
 function setupCameraSketch() {
     const container = document.getElementById('p5-canvas-container');
     if (!container) return;
 
-    // p5.js im Instance Mode für bessere Kontrolle
     const sketch = (p) => {
 
-        /**
-         * p.setup() - Einmalige Initialisierung
-         * Erstellt Canvas und startet Kamera mit createCapture(VIDEO)
-         */
         p.setup = function() {
-            // Canvas erstellen - 16:9 Aspect Ratio
             const canvas = p.createCanvas(640, 480);
             canvas.parent('p5-canvas-container');
 
-            // ===== KAMERAZUGRIFF MIT p5.js =====
-            // Laut Doku: "p5.js bietet hierfür die Funktion createCapture(VIDEO),
-            // die den Stream direkt als nutzbares Medienobjekt bereitstellt"
             capture = p.createCapture(p.VIDEO,
-                // Success Callback
                 (stream) => {
                     cameraReady = true;
                     cameraError = null;
                     hideError();
                     enableCaptureButton(true);
-                    console.log('✅ Kamera erfolgreich mit p5.js gestartet');
+                    console.log('✅ Camera started successfully with p5.js');
                 }
             );
 
-            // Error Handling - Laut Doku wichtig für Browser-Berechtigungen
             capture.elt.onerror = (err) => {
                 cameraError = err;
                 cameraReady = false;
-                showError('Kamerazugriff fehlgeschlagen. Bitte erlaube den Zugriff in den Browser-Einstellungen.');
+                showError('Camera access failed. Please allow access in browser settings.');
                 enableCaptureButton(false);
             };
 
-            // Video-Element verstecken (wir zeichnen es manuell auf Canvas)
             capture.hide();
 
-            // Pixel Density für konsistente Darstellung
             p.pixelDensity(1);
 
-            // Letztes Frame für Onion Skin laden falls vorhanden
             loadLastFrame(p);
         };
 
-        /**
-         * p.draw() - Rendering Loop (60fps)
-         * Hier passiert die "Magie des Onion Skinnings"
-         */
         p.draw = function() {
-            // Hintergrund schwarz
             p.background(20);
 
             if (cameraReady && capture) {
-                // ========================================
-                // SCHRITT 1: Live-Kamerabild zeichnen
-                // ========================================
-                // "Zuerst wird das aktuelle Bild auf den Canvas gezeichnet.
-                //  Dieses kann entweder ein Live-Bild der Webcam oder ein
-                //  vom Benutzer hochgeladenes Bild sein."
                 p.push();
-                // Horizontal spiegeln für natürlicheres Selfie-Gefühl
                 p.translate(p.width, 0);
                 p.scale(-1, 1);
                 p.image(capture, 0, 0, p.width, p.height);
                 p.pop();
 
-                // ========================================
-                // SCHRITT 2: Onion Skin Overlay
-                // ========================================
-                // "Falls bereits ein Frame aufgenommen wurde ('Last Captured Frame'),
-                //  wird dieses Bild über das aktuelle Bild gelegt.
-                //  Dabei nutzt die Anwendung p5.js-Funktionen, um die Transparenz
-                //  des überlagerten Bildes dynamisch zu steuern."
                 if (showOnionSkin && lastFrameImg) {
                     p.push();
-                    // ===== TRANSPARENZ MIT tint() =====
-                    // tint(255, alpha) setzt die Transparenz für das nächste image()
-                    // alpha: 0 = vollständig transparent, 255 = vollständig sichtbar
                     p.tint(255, onionOpacity);
-
-                    // Gespiegelt zeichnen (wie Live-Bild)
-                    p.translate(p.width, 0);
-                    p.scale(-1, 1);
                     p.image(lastFrameImg, 0, 0, p.width, p.height);
                     p.pop();
                 }
 
-                // ========================================
-                // SCHRITT 3: Capture Flash Effect
-                // ========================================
-                // Visuelles Feedback beim Aufnehmen
                 if (flashAlpha > 0) {
                     p.push();
                     p.fill(255, flashAlpha);
                     p.noStroke();
                     p.rect(0, 0, p.width, p.height);
                     p.pop();
-                    flashAlpha -= 15; // Sanftes Ausblenden
+                    flashAlpha -= 15;
                 }
 
             } else {
-                // Kamera nicht bereit - Platzhalter
                 p.fill(150);
                 p.textAlign(p.CENTER, p.CENTER);
                 p.textSize(18);
                 if (cameraError) {
-                    p.text('⚠️ Kamera nicht verfügbar', p.width/2, p.height/2);
+                    p.text('⚠️ Camera not available', p.width/2, p.height/2);
                 } else {
-                    p.text('📷 Kamera wird geladen...', p.width/2, p.height/2);
+                    p.text('📷 Loading camera...', p.width/2, p.height/2);
                 }
             }
         };
 
-        /**
-         * Frame aufnehmen
-         * Speichert aktuelles Kamerabild und aktualisiert Onion Skin
-         */
-        p.captureFrame = function() {
+        p.captureFrame = async function() {
             if (!cameraReady || !capture) return;
 
-            // Canvas für Screenshot erstellen
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = capture.width || 640;
             tempCanvas.height = capture.height || 480;
             const ctx = tempCanvas.getContext('2d');
 
-            // Video-Frame auf Canvas zeichnen (gespiegelt wie Anzeige)
             ctx.translate(tempCanvas.width, 0);
             ctx.scale(-1, 1);
             ctx.drawImage(capture.elt, 0, 0, tempCanvas.width, tempCanvas.height);
 
-            // Als Data URL speichern
-            const dataUrl = tempCanvas.toDataURL('image/png');
+            const rawDataUrl = tempCanvas.toDataURL('image/jpeg', 0.8);
+            const dataUrl = await compressImage(rawDataUrl, 800, 0.55);
             FrameStore.addFrame(dataUrl);
 
-            // Letztes Frame für Onion Skin aktualisieren
             p.loadImage(dataUrl, (img) => {
                 lastFrameImg = img;
             });
 
-            // Flash-Effekt auslösen
             flashAlpha = 200;
 
-            // UI aktualisieren
             updateCameraUI();
         };
 
-        /**
-         * Onion Skin Transparenz setzen
-         * @param {number} value - Wert von 0.0 bis 1.0
-         */
         p.setOnionOpacity = function(value) {
-            // Wert von 0-1 auf 0-255 umrechnen für tint()
             onionOpacity = Math.round(value * 255);
         };
 
-        /**
-         * Onion Skin ein/ausschalten
-         */
         p.toggleOnionSkin = function() {
             showOnionSkin = !showOnionSkin;
             return showOnionSkin;
         };
 
-        /**
-         * Letztes Frame aus Storage laden
-         */
         function loadLastFrame(p) {
             const frames = FrameStore.getFrames();
             if (frames.length > 0) {
                 const lastFrame = frames[frames.length - 1];
                 p.loadImage(lastFrame.dataUrl, (img) => {
                     lastFrameImg = img;
-                    console.log('✅ Letztes Frame für Onion Skin geladen');
+                    console.log('✅ Last frame loaded for Onion Skin');
                 });
             }
         }
     };
 
-    // p5.js Instanz erstellen und global speichern
     window.p5Instance = new p5(sketch);
 }
 
-// ==================== UI HELPER FUNCTIONS ====================
 function showError(message) {
     const errorBox = document.getElementById('camera-error');
     const retryBox = document.getElementById('camera-retry');
@@ -283,20 +230,16 @@ function enableCaptureButton(enabled) {
 function updateCameraUI() {
     const frames = FrameStore.getFrames();
 
-    // Frame Counter
     const counter = document.getElementById('frame-counter');
     if (counter) counter.textContent = `Frames: ${frames.length}`;
 
-    // Timeline
     renderTimeline(frames);
 
-    // Preview Button
     const previewBtn = document.getElementById('btn-preview');
     if (previewBtn) {
         previewBtn.style.display = frames.length > 0 ? 'flex' : 'none';
     }
 
-    // Onion Controls
     const onionControls = document.getElementById('onion-controls');
     if (onionControls) {
         onionControls.style.display = frames.length > 0 ? 'block' : 'none';
@@ -311,8 +254,8 @@ function renderTimeline(frames) {
         container.innerHTML = `
             <div class="timeline-empty">
                 <div class="empty-icon">📷</div>
-                <p class="empty-text">Noch keine Frames</p>
-                <p class="empty-hint">Starte mit dem Aufnehmen!</p>
+                <p class="empty-text">No frames yet</p>
+                <p class="empty-hint">Start capturing!</p>
             </div>
         `;
         return;
@@ -327,9 +270,7 @@ function renderTimeline(frames) {
     `).join('');
 }
 
-// ==================== CAMERA PAGE CONTROLS ====================
 function setupCameraControls() {
-    // Capture Button
     const captureBtn = document.getElementById('btn-capture');
     if (captureBtn) {
         captureBtn.addEventListener('click', () => {
@@ -339,7 +280,6 @@ function setupCameraControls() {
         });
     }
 
-    // Retry Button
     const retryBtn = document.getElementById('btn-retry');
     if (retryBtn) {
         retryBtn.addEventListener('click', () => {
@@ -350,7 +290,6 @@ function setupCameraControls() {
         });
     }
 
-    // Onion Skin Toggle - "Button 'Hide Onion Skin' erlaubt Ein-/Ausblenden"
     const onionToggle = document.getElementById('btn-onion-toggle');
     if (onionToggle) {
         onionToggle.addEventListener('click', () => {
@@ -361,7 +300,6 @@ function setupCameraControls() {
         });
     }
 
-    // Onion Skin Opacity Slider
     const opacitySlider = document.getElementById('onion-opacity');
     const opacityValue = document.getElementById('opacity-value');
     if (opacitySlider) {
@@ -374,7 +312,6 @@ function setupCameraControls() {
         });
     }
 
-    // Close Camera Button
     const closeBtn = document.getElementById('btn-close-camera');
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
@@ -385,7 +322,6 @@ function setupCameraControls() {
         });
     }
 
-    // Preview Button
     const previewBtn = document.getElementById('btn-preview');
     if (previewBtn) {
         previewBtn.addEventListener('click', () => {
@@ -394,7 +330,6 @@ function setupCameraControls() {
     }
 }
 
-// ==================== UPLOAD MODULE ====================
 const UploadModule = {
     init() {
         this.setupUploadHandlers();
@@ -433,26 +368,37 @@ const UploadModule = {
     handleFiles(files) {
         if (!files || files.length === 0) return;
 
-        Array.from(files).forEach(file => {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    FrameStore.addFrame(e.target.result);
-                    if (typeof FramesPageModule !== 'undefined') {
-                        FramesPageModule.updateUI();
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        const tasks = Array.from(files).map(file => this.processFile(file));
 
-        if (window.location.pathname === '/homepage') {
-            setTimeout(() => window.location.href = '/frames', 500);
+        Promise.all(tasks)
+            .then(() => {
+                if (window.location.pathname === '/homepage') {
+                    setTimeout(() => window.location.href = '/frames', 500);
+                }
+            })
+            .catch(err => console.error('Upload failed', err));
+    },
+
+    async processFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const dataUrl = await this.readFileAsDataUrl(file);
+        const compressed = await compressImage(dataUrl, 1280, 0.7);
+        FrameStore.addFrame(compressed);
+        if (typeof FramesPageModule !== 'undefined') {
+            FramesPageModule.updateUI();
         }
+    },
+
+    readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
 };
 
-// ==================== FRAMES PAGE MODULE ====================
 const FramesPageModule = {
     draggedIndex: null,
 
@@ -467,6 +413,11 @@ const FramesPageModule = {
             backBtn.addEventListener('click', () => window.location.href = '/homepage');
         }
 
+        const cameraBtn = document.getElementById('btn-camera');
+        if (cameraBtn) {
+            cameraBtn.addEventListener('click', () => window.location.href = '/');
+        }
+
         const createBtn = document.getElementById('btn-create');
         if (createBtn) {
             createBtn.addEventListener('click', () => window.location.href = '/videopage');
@@ -475,7 +426,7 @@ const FramesPageModule = {
         const clearBtn = document.getElementById('btn-clear');
         if (clearBtn) {
             clearBtn.addEventListener('click', () => {
-                if (confirm('Möchtest du wirklich alle Frames löschen?')) {
+                if (confirm('Do you really want to delete all frames?')) {
                     FrameStore.clearAll();
                     this.updateUI();
                 }
@@ -493,7 +444,7 @@ const FramesPageModule = {
 
         if (createBtn) {
             createBtn.disabled = frames.length === 0;
-            createBtn.textContent = `Animation erstellen (${frames.length} Frames)`;
+            createBtn.textContent = `Create Animation (${frames.length} frames)`;
         }
         if (clearBtn) {
             clearBtn.disabled = frames.length === 0;
@@ -503,8 +454,8 @@ const FramesPageModule = {
             grid.innerHTML = `
                 <div class="frames-empty">
                     <div class="empty-icon">🖼️</div>
-                    <p class="empty-text">Noch keine Frames</p>
-                    <p class="empty-hint">Lade Bilder hoch um zu starten</p>
+                    <p class="empty-text">No frames yet</p>
+                    <p class="empty-hint">Upload images to get started</p>
                 </div>
             `;
             grid.classList.add('empty');
@@ -564,7 +515,6 @@ const FramesPageModule = {
     }
 };
 
-// ==================== VIDEO PLAYER MODULE ====================
 const VideoPlayerModule = {
     frames: [],
     currentIndex: 0,
@@ -642,7 +592,7 @@ const VideoPlayerModule = {
         if (backBtn) {
             backBtn.addEventListener('click', () => {
                 this.pause();
-                window.location.href = '/homepage';
+                window.location.href = '/frames';
             });
         }
     },
@@ -751,7 +701,7 @@ const VideoPlayerModule = {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (this.frames.length <= 1) {
-                        alert('Mindestens ein Frame wird benötigt!');
+                        alert('At least one frame is required!');
                         return;
                     }
                     FrameStore.deleteFrame(btn.dataset.id);
@@ -777,14 +727,13 @@ const VideoPlayerModule = {
     },
 
     async downloadVideo() {
-        // Standardmäßig MP4 downloaden
         await this.downloadAsMP4();
     },
 
     async downloadAsGif() {
         const btn = document.getElementById('btn-download');
         const originalText = btn.innerHTML;
-        btn.innerHTML = 'Erstelle GIF... 0%';
+        btn.innerHTML = 'Creating GIF... 0%';
         btn.disabled = true;
 
         try {
@@ -815,7 +764,7 @@ const VideoPlayerModule = {
                 ctx.drawImage(img, 0, 0, 640, 480);
 
                 gif.addFrame(ctx, { delay: 1000 / this.fps, copy: true });
-                btn.innerHTML = `Erstelle GIF... ${Math.round((i + 1) / this.frames.length * 100)}%`;
+                btn.innerHTML = `Creating GIF... ${Math.round((i + 1) / this.frames.length * 100)}%`;
             }
 
             gif.on('finished', (blob) => {
@@ -843,7 +792,7 @@ const VideoPlayerModule = {
     async downloadAsWebM() {
         const btn = document.getElementById('btn-download');
         const originalText = btn.innerHTML;
-        btn.innerHTML = 'Erstelle Video...';
+        btn.innerHTML = 'Creating video...';
         btn.disabled = true;
 
         try {
@@ -890,7 +839,7 @@ const VideoPlayerModule = {
 
         } catch (err) {
             console.error('WebM creation failed:', err);
-            alert('Video-Erstellung fehlgeschlagen. Versuche den GIF-Download.');
+            alert('Video creation failed. Trying GIF download.');
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
@@ -899,7 +848,7 @@ const VideoPlayerModule = {
     async downloadAsMP4() {
         const btn = document.getElementById('btn-download');
         const originalText = btn.innerHTML;
-        btn.innerHTML = 'Erstelle MP4... 0%';
+        btn.innerHTML = 'Creating MP4... 0%';
         btn.disabled = true;
 
         try {
@@ -930,7 +879,6 @@ const VideoPlayerModule = {
 
             recorder.start();
 
-            // Zeichne alle Frames
             for (let i = 0; i < this.frames.length; i++) {
                 const img = new Image();
                 img.src = this.frames[i].dataUrl;
@@ -940,7 +888,7 @@ const VideoPlayerModule = {
                 await new Promise(resolve => setTimeout(resolve, 1000 / this.fps));
 
                 const progress = Math.round((i + 1) / this.frames.length * 100);
-                btn.innerHTML = `Erstelle MP4... ${progress}%`;
+                btn.innerHTML = `Creating MP4... ${progress}%`;
             }
 
             recorder.stop();
@@ -954,7 +902,7 @@ const VideoPlayerModule = {
     },
 
     async downloadFramesAsZip() {
-        alert('Video-Erstellung nicht möglich. Frames werden einzeln heruntergeladen.');
+        alert('Video creation not possible. Downloading frames individually.');
 
         for (let i = 0; i < this.frames.length; i++) {
             const a = document.createElement('a');
@@ -966,30 +914,27 @@ const VideoPlayerModule = {
     }
 };
 
-// ==================== HOMEPAGE MODULE ====================
 const HomepageModule = {
     init() {
         const frames = FrameStore.getFrames();
 
-        const frameStatus = document.getElementById('frame-status');
-        if (frameStatus && frames.length > 0) {
-            frameStatus.style.display = 'flex';
-            const countEl = frameStatus.querySelector('.frame-count');
-            if (countEl) {
-                countEl.textContent = `${frames.length} Frame${frames.length !== 1 ? 's' : ''} bereit`;
+        const animationStatus = document.getElementById('animation-status');
+        if (animationStatus && frames.length > 0) {
+            animationStatus.style.display = 'flex';
+            const statusText = document.getElementById('status-text');
+            if (statusText) {
+                statusText.textContent = `${frames.length} frame${frames.length !== 1 ? 's' : ''} ready`;
             }
         }
     }
 };
 
-// ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
     UploadModule.init();
 
     if (path === '/' || path === '/index') {
-        // p5.js Kamera mit Onion Skinning starten
         setupCameraSketch();
         setupCameraControls();
         updateCameraUI();
@@ -1002,7 +947,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Cleanup
 window.addEventListener('beforeunload', () => {
     if (window.p5Instance) {
         window.p5Instance.remove();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,6 @@
 <body>
     <div class="container">
         <div class="page-wrapper">
-            <!-- Header -->
             <header class="header">
                 <div class="header-content">
                     <div class="nav-left">
@@ -19,6 +18,7 @@
                         </div>
                         <nav class="nav-primary">
                             <a href="/homepage" class="nav-link">Homepage</a>
+                            <a href="/frames" class="nav-link">Frames</a>
                             <a href="/videopage" class="nav-link">Videopage</a>
                         </nav>
                     </div>
@@ -29,13 +29,15 @@
                 </div>
             </header>
 
-            <!-- Main Content -->
             <main class="main-content">
                 <div class="frames-card">
-                    <!-- Card Header -->
                     <div class="card-header">
                         <h1 class="card-title">Manage Your Frames</h1>
                         <div class="header-actions">
+                            <button class="btn btn-camera" id="btn-camera">
+                                <span class="icon icon-camera"></span>
+                                Capture More
+                            </button>
                             <label for="add-more-input" class="btn btn-add">
                                 + Add More Images
                                 <input type="file" id="add-more-input" accept="image/*" multiple style="display:none;">
@@ -44,7 +46,6 @@
                         </div>
                     </div>
 
-                    <!-- Frames Grid: leerer Zustand standardmäßig -->
                     <div class="frames-grid empty" id="frames-grid">
                         <div class="timeline-empty">
                             <div class="empty-icon">
@@ -55,7 +56,6 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="card-actions">
                         <button class="btn btn-create" id="btn-create" disabled>Create Animation (0 frames)</button>
                         <button class="btn btn-clear" id="btn-clear" disabled>Clear All</button>

@@ -233,7 +233,7 @@ body {
 .icon-camera {
     width: 20px;
     height: 20px;
-    background-image: url('/Pictures/camera-icon.svg');
+    background-image: url('../Pictures/camera-icon.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

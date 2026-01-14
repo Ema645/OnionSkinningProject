@@ -53,7 +53,7 @@ body { font-family: Arial, sans-serif; background: #F9FAFB; min-height: 100vh; }
 
 /* Icons */
 .icon { display: inline-block; position: relative; width: 20px; height: 20px; }
-.icon-camera { width: 20px; height: 20px; background-image: url('/Pictures/camera-icon.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; }
+.icon-camera { width: 20px; height: 20px; background-image: url('../Pictures/camera-icon.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; }
 .icon-camera::before, .icon-camera::after { display: none; }
 .icon-drag { width: 16px; height: 16px; }
 .icon-drag::before, .icon-drag::after { content: ''; position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; }

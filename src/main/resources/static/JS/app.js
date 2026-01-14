@@ -253,7 +253,9 @@ function renderTimeline(frames) {
     if (frames.length === 0) {
         container.innerHTML = `
             <div class="timeline-empty">
-                <div class="empty-icon">📷</div>
+                <div class="empty-icon">
+                    <span class="icon icon-image"></span>
+                </div>
                 <p class="empty-text">No frames yet</p>
                 <p class="empty-hint">Start capturing!</p>
             </div>
@@ -262,12 +264,65 @@ function renderTimeline(frames) {
     }
 
     container.innerHTML = frames.map((frame, index) => `
-        <div class="timeline-frame" data-id="${frame.id}">
+        <div class="timeline-frame" draggable="true" data-index="${index}" data-id="${frame.id}">
             <span class="frame-number">#${index + 1}</span>
             <img src="${frame.dataUrl}" alt="Frame ${index + 1}" class="frame-thumb">
             <span class="frame-time">${new Date(frame.timestamp).toLocaleTimeString()}</span>
+            <button class="btn-delete-frame" data-id="${frame.id}">🗑️</button>
         </div>
     `).join('');
+
+    let draggedIndex = null;
+    let draggedElement = null;
+
+    container.querySelectorAll('.timeline-frame').forEach((el, index) => {
+        el.addEventListener('dragstart', (e) => {
+            draggedIndex = parseInt(el.dataset.index);
+            draggedElement = el;
+            el.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        el.addEventListener('dragend', () => {
+            el.classList.remove('dragging');
+            document.querySelectorAll('.timeline-frame').forEach(frame => {
+                frame.classList.remove('drag-over');
+            });
+            draggedIndex = null;
+            draggedElement = null;
+        });
+
+        el.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (draggedElement && draggedElement !== el) {
+                el.classList.add('drag-over');
+            }
+        });
+
+        el.addEventListener('dragleave', () => {
+            el.classList.remove('drag-over');
+        });
+
+        el.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedIndex === null) return;
+
+            const targetIndex = parseInt(el.dataset.index);
+            if (draggedIndex !== targetIndex) {
+                FrameStore.reorderFrames(draggedIndex, targetIndex);
+                updateCameraUI();
+            }
+        });
+    });
+
+    container.querySelectorAll('.btn-delete-frame').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            FrameStore.deleteFrame(btn.dataset.id);
+            updateCameraUI();
+        });
+    });
 }
 
 function setupCameraControls() {
@@ -680,6 +735,7 @@ const VideoPlayerModule = {
         if (timeline) {
             timeline.innerHTML = this.frames.map((frame, index) => `
                 <div class="timeline-frame ${index === this.currentIndex ? 'active' : ''}" 
+                     draggable="true"
                      data-index="${index}">
                     <span class="frame-number">#${index + 1}</span>
                     <img src="${frame.dataUrl}" alt="Frame ${index + 1}" class="frame-thumb">
@@ -688,7 +744,55 @@ const VideoPlayerModule = {
                 </div>
             `).join('');
 
-            timeline.querySelectorAll('.timeline-frame').forEach(el => {
+            let draggedIndex = null;
+            let draggedElement = null;
+
+            timeline.querySelectorAll('.timeline-frame').forEach((el, index) => {
+                el.addEventListener('dragstart', (e) => {
+                    draggedIndex = parseInt(el.dataset.index);
+                    draggedElement = el;
+                    el.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                el.addEventListener('dragend', () => {
+                    el.classList.remove('dragging');
+                    document.querySelectorAll('.timeline-frame').forEach(frame => {
+                        frame.classList.remove('drag-over');
+                    });
+                    draggedIndex = null;
+                    draggedElement = null;
+                });
+
+                el.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    if (draggedElement && draggedElement !== el) {
+                        el.classList.add('drag-over');
+                    }
+                });
+
+                el.addEventListener('dragleave', () => {
+                    el.classList.remove('drag-over');
+                });
+
+                el.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (draggedIndex === null) return;
+
+                    const targetIndex = parseInt(el.dataset.index);
+                    if (draggedIndex !== targetIndex) {
+                        FrameStore.reorderFrames(draggedIndex, targetIndex);
+                        draggedIndex = targetIndex;
+                        this.frames = FrameStore.getFrames();
+                        if (this.currentIndex >= this.frames.length) {
+                            this.currentIndex = this.frames.length - 1;
+                        }
+                        this.updateUI();
+                        this.renderFrame();
+                    }
+                });
+
                 el.addEventListener('click', (e) => {
                     if (e.target.closest('.btn-delete-frame')) return;
                     this.pause();

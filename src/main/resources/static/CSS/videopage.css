@@ -637,3 +637,35 @@ body {
         font-size: 14px;
     }
 }
+
+/* Timeline Frame Styles */
+.timeline-frame {
+    cursor: move;
+    transition: background 0.2s;
+}
+
+.timeline-frame.dragging {
+    opacity: 0.5;
+    background: #E5E7EB;
+}
+
+.timeline-frame.drag-over {
+    border-top: 3px solid #155DFC;
+    border-bottom: 3px solid #155DFC;
+}
+
+.btn-delete-frame {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-delete-frame:hover {
+    opacity: 1;
+}
+
